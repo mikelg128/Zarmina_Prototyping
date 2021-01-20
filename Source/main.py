@@ -1,4 +1,5 @@
 import tcod
+import event_handling
 
 
 class Engine:
@@ -9,6 +10,7 @@ class Engine:
         # Load font as tileset:
         self.tileset = tcod.tileset.load_tilesheet('assets/arial10x10.png', 32, 8, tcod.tileset.CHARMAP_TCOD)
         self.console = tcod.Console(self.WIDTH, self.HEIGHT, order='F')
+        self.event_dispatch = event_handling.State()
 
     def play_game(self):
         with tcod.context.new_terminal(columns=self.console.width, rows=self.console.height, tileset=self.tileset) \
@@ -21,11 +23,7 @@ class Engine:
                 for event in tcod.event.wait():
                     context.convert_event(event)
                     print(event)
-                    self.handle_events(event)
-
-    def handle_events(self, event):
-        if event.type == "QUIT":
-            raise SystemExit()
+                    self.event_dispatch.dispatch(event)
 
 
 def main() -> None:
